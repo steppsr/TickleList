@@ -3,12 +3,10 @@
 # Todo.txt implemenation in TCL/Tk                                            #
 #                                                                             #
 # ----------------------------------------------------------------------------#
-# TODO - Need to update the filter_data proc to parse into a list and pass
-# 			back a list as the result.
 # TODO - Need to modify show_result proc to handle a list as input instead of
 #			what it does currently.
 # TODO - Need to code the show_usage proc.
-#
+# TODO - Need to allow options passed as arguments.
 #
 proc read_datafile {filename} {
 	##
@@ -102,18 +100,17 @@ proc filter_list {data terms} {
 		if ![string equal $line ""] {
 			if {[string first $terms $line] >= 0} {
 				if {$loopcount == 1} {
-					set res_line [concat "{" [string trim $line] "}" ]
-					set result [string trim [string trim $res_line]]
+					set result [append result "{" [string trim $line] "} "]
 					if {$debug == 1} {
 						puts $result
 					}
 				} else {
-					set res_line [concat [$result] " {" [string trim $line] "}" ]
-					set result [string trim [concat [$result] [string trim $res_line]]]
+					set result [append result " {" [string trim $line] "} "]
 					if {$debug == 1} {
 						puts $result
 					}
 				}
+				
 			}
 		}
 	}
@@ -134,7 +131,7 @@ proc filter_list {data terms} {
 
 set action ""
 set terms ""
-set debug 1  ;# debug 0 = hide debug messages, debug 1 = show debug messages
+set debug 0  ;# debug 0 = hide debug messages, debug 1 = show debug messages
 
 if {$debug == 1} {
 	show_header
@@ -168,6 +165,8 @@ switch -exact -- $action {
 		#  TODO - sort $data by priority (after filter)
 		if {$debug == 1} {
 			# show the unfiltered list first for debugging purposes
+			show_divider " "
+			puts $data
 			show_divider " "
 			show_result $data
 			show_divider " "
