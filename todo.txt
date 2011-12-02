@@ -1,63 +1,7 @@
-(A) 2011-06-07 Update Breakout to process two panes of glass at a time +Breakout
-x 2011-06-08 2011-06-07 Fixed the drawing of operation on combo doors +pk137 @pk
-x 2011-06-08 2011-06-07 USA SashSet Fixed Lites are missing several geometrics for stacking above +pk137 @pk
-x 2011-06-08 2011-06-07 Grille Color is missing from double-check +pk137 @pk
-x 2011-06-08 2011-06-07 Primed is causing million dollar price on wood grilles +pk137 @pk
-x 2011-08-02 2011-06-07 On all clad products sort the hardware colors by standard then non-standard. Also add Standard into the answers display name +pk139 @pk
-x 2011-06-07 2011-06-07 Correct spelling on Obscure Location in Description +pk137 @pk
-x 2011-06-07 2011-06-07 Fix bug drawing operation on combo Inswing Doors +pk137 @pk
-x 2011-06-07 2011-06-07 Fix Object Ref error on SashSet Transoms with Door application type +pk137 @pk
-x 2011-06-07 2011-06-07 Remove Hard limit on Obscure and TDL together +pk137 @pk
-x 2011-06-07 2011-06-07 Remove Horizontal Spread Mulls +pk137 @pk
-x 2011-06-07 2011-06-07 Remove custom option for jambsize which was mistakenly turned on for dealers. Fix pricing for CSRs. Add softwarning that manufacturing approval required for custom jambsizes +pk137 @pk
-x 2011-06-07 2011-06-07 Add CallWidth 26 to Fixed Lites
-x 2011-06-07 2011-06-07 Setup USA Casement Bay and Bows. On 7-5-2011 had to make visible using HideTreeNode program. +pk137 @pk
-x 2011-06-07 2011-06-07 Setup USA Double Hung Bows +pk137 @pk
-x 2011-06-19 2011-06-08 Add restriction to Kickpanels so that custom sized panels can not be larger than the half panel +pk137 @pk
-x 2011-06-21 2011-06-09 Update Preferences and Global Changes for new options from pk136 @pk
-x 2011-06-13 2011-06-13 Brickmold on Doors is not pricing +pk137 @pk
-x 2011-04-22 2011-04-22 RELEASE Build 3.5.3025.22 +build3025
-x 2011-04-22 2011-04-22 Add Kickpanels on Inswing Doors +pk136 @pk
-x 2011-04-22 2011-04-22 Add Sash Set Transom stackable over Doors +pk136 @pk
-x 2011-04-22 2011-04-22 Add Extruded Screen to Clad products +pk136 @pk
-x 2011-04-22 2011-04-22 Add Primed Interior on USA Replacement Insert Double Hung +pk136 @pk
-x 2011-04-22 2011-04-22 Add Accessory Profiles for additional Brickmolds, Frame Expanders, Flat Casings, and Spread mulls +pk136 @pk
-x 2011-04-22 2011-04-22 Add Sash Packs for old SunClad DH products +pk136 @pk
-x 2011-04-22 2011-04-22 Remove restriction from user for GBGs in Vinyl when selecting 1-color or 2-color grids based on the Frame Color +pk136 @pk
-x 2011-04-22 2011-04-22 Remove Painted Half Screens on DH54 Double Hungs +pk136 @pk
-x 2011-04-22 2011-04-22 Fix Object reference error on DH11 Picture Sash +pk136 @pk
-x 2011-04-22 2011-04-22 Update description for Obscure Location +pk136 @pk
-x 2011-04-22 2011-04-22 Update available Screen colors in Vinyl +pk136 @pk
-x 2011-04-22 2011-04-22 Fix bug on old 5/8" ICMs +pk136 @pk
-(B) 2011-06-17 Setup GED WinIG software to run inside Virtual PC in Scheduling office
-(B) 2011-06-17 Want to modify CustomLineItems to route to the MBS instead of Parts sheets
-x 2011-07-28 2011-06-17 1" Wood grilles on Doors need to say with Surround @pk +pk139
-(B) 2011-06-17 Update Breakout to route Stock Temp Door glass to the regular modes for glass integration +Breakout @top3
-(B) 2011-06-17 Update Breakout to route Non-Stock Temp Doors to Mode 4 for glass integrations +Breakout @top3
-x 2011-06-28 2011-06-19 Get with WTS about Preferences in S3Test not matching Live
-x 2011-08-02 2011-06-19 Lower Frame Width limit on True French doors to 36 inches. +pk139 @pk
-x 2011-08-02 2011-06-19 Casement is missing Custom for Frame Color for Sales reps. +pk139 @pk
-x 2011-06-20 2011-06-20 PK137 introduced error when stacking over Clad Double Hungs +pk138 @pk
-x 2011-07-28 2011-06-22 Blinds on Sliding doors is causing an Obj Ref error when viewing the BOM +pk139 @pk
+(A) 2011-06-07 Update Breakout to process two panes of glass +Breakout
+x 2011-06-08 2011-06-07 Fixed the draw of op on combo doors +pk137 @pk
+(B) 2011-06-17 Setup WinIG to run inside VirtualPC in Scheduling off
+x 2011-08-02 2011-06-19 Csmt missin Custom on FC for reps +pk139 @pk
 (A) 2011-06-27 PK Template Setup +pktemplates @top3
-(A) 2011-06-27 Powdercoat Production Setup in Masterpoint +powdercoat @top3
-x 2011-08-02 2011-06-27 PK 139 Update +pk139 @top3
-x 2011-08-05 2011-06-29 Casement and Awning are not allowing Roll-form screens when the Exterior color is powdercoat only. Should allow either since the screen is interior +pk140 @pk
-x 2011-07-28 2011-06-30 Restrict vinyl products to have a Frame Radius above 11.6875 [e.g. eliminating CW20 on Half Round] +pk139 @pk
-x 2011-08-02 2011-07-06 PowderCoat - Need to update Masterpoint Views for Mill Finish Aluminum @top3
-(C) 2011-07-08 Find out more about UseDealerClientType option for Centerpoint. Would like to define types for Clients if possible @CP
-(B) 2011-07-08 Test the Manual Line Configurator to ensure it stays out of production paperwork, then turn on for Live if so. @CP
+(C) 2011-07-08 UseDealerClientType option for Centerpoint? @CP
 (B) 2011-07-20 Loud Speaker in Glass Dept is not working.
-x 2011-08-02 2011-07-22 Retractable screens on multiple wide casements is not working @pk
-x 2011-07-29 2011-07-28 Correct pricing of custom-sized Inswing Door +pk139 @pk
-(C) 2011-08-02 Chris Anderson requested we setup Single Hole Bore on Outswing Doors.  @pk
-x 2011-08-05 2011-08-02 BUG - USA Casement 24x55 6331 LowE with Blind Panel is charging for Solar Passive. Appears related to Triple Glazed. @pk
-(B) 2011-08-23 Review setting up a ScreenLabel for Ship Separate
-x 2011-08-30 2011-08-30 Update the EZQuote start page to have the latest versions of the Sun warranties.
-(C) 2011-08-31 Setup Zebra printers on Louanns computer
-(A) 2011-09-01 Sash Packs need to add calculated callsize into Model for MBS.
-x 2011-09-01 2011-09-01 Shop built Sash Packs need update description to say Shop-Built
-(A) 2011-09-01 The SunClad Sash Kit is missing the framesize on the MBS
-(A) 2011-09-01 Sash Kit for Typical Shop Built is saying NOT FOUND on the Cutlist for the Call Width
-x 2011-09-14 2011-09-06 Be sure we allow roll-form screens and all their colors on a powdercoat painted exterior @pk
-x 2011-09-14 2011-09-13 Order a new (larger) monitor for Frank. Ensure it also has speakers.
