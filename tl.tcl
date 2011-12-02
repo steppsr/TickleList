@@ -92,28 +92,40 @@ proc get_arguments {argc argv} {
 }
 
 proc filter_list {data terms} {
+	global debug
+	
 	set result ""
 	set loopcount 1
 	set res_line ""
+	
 	foreach line $data {
 		if ![string equal $line ""] {
 			if {[string first $terms $line] >= 0} {
 				if {$loopcount == 1} {
 					set res_line [concat "{" [string trim $line] "}" ]
 					set result [string trim [string trim $res_line]]
+					if {$debug == 1} {
+						puts $result
+					}
 				} else {
 					set res_line [concat [$result] " {" [string trim $line] "}" ]
 					set result [string trim [concat [$result] [string trim $res_line]]]
+					if {$debug == 1} {
+						puts $result
+					}
 				}
 			}
 		}
 	}
-	show_divider
-	puts $result
-	show_divider
 	
-	foreach x $result {
-		puts [string trim $x]
+	if {$debug == 1} {
+		show_divider
+		puts $result
+		show_divider
+		
+		foreach x $result {
+			puts [string trim $x]
+		}
 	}
 	
 	return $result
@@ -163,8 +175,11 @@ switch -exact -- $action {
 		if {[string length $terms] > 0} {
 			set data [filter_list $data $terms]
 		}
-		show_divider "="
+		if {$debug == 1} {
+			show_divider "="
+		}
+		show_divider " "
 		show_result $data
+		show_divider " "
 	}
-	
 }
