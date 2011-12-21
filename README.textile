@@ -11,36 +11,37 @@ required on the platform before the application can run.
 The objective of the CLI is to mimick the Todo.sh CLI from todotxt.com.
 
 Actions:
-	add | a
-	addto
-	append | app
-	archive
-	del | rm
-	depri | dp
-	do
-	help
-	list | ls
-	listall | lsa
-	listcon | lsc
-	listfile | lf
-	listpri | lsp
-	listproj | lsprj
-	move | mv
-	prepend | prep
-	pri | p
-	replace
+*	add | a
+*	addto
+*	append | app
+*	archive
+*	del | rm
+*	depri | dp
+*	do
+*	help
+*	list | ls
+*	listall | lsa
+*	listcon | lsc
+*	listfile | lf
+*	listpri | lsp
+*	listproj | lsprj
+*	move | mv
+*	prepend | prep
+*	pri | p
+*	replace
 
 
-Command Shortcuts
+h1. Command Shortcuts
 
 The t.bat file is a Windows Batch file to create a shorter command to run the program.
 The batch calls the interpreter with the program file and any command line parameters
 passed in also. It could be renamed to something else if prefered.
 
 On Mac OS X, I added the following line to my .bash_profile that also acts as a shortcut:
-@alais t='tclsh tl.tcl'
+@alias t='tclsh tl.tcl'
 @
 
-TCL Intrepreter
+h1. TCL Intrepreter
+
 Tested with ActiveState's TCL Interpreter.
 http://www.activestate.com/activetcl/downloads
