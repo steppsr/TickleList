@@ -45,4 +45,4 @@ On Mac OS X, I added the following line to my .bash_profile that also acts as a 
 h1. TCL Intrepreter
 
 Tested with ActiveState's TCL Interpreter.
-http://www.activestate.com/activetcl/downloads
+"http://www.activestate.com/activetcl/downloads":http://www.activestate.com/activetcl/downloads
