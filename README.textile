@@ -38,8 +38,7 @@ The batch calls the interpreter with the program file and any command line param
 passed in also. It could be renamed to something else if prefered.
 
 On Mac OS X, I added the following line to my .bash_profile that also acts as a shortcut:
-@alias t='tclsh tl.tcl'
-@
+@alias t='tclsh tl.tcl'@
 
 h1. TCL Intrepreter
 
