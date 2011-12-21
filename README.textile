@@ -1,3 +1,5 @@
+h1. TickleList
+
 Tickle List is an implementation of Todo.txt in TCL/Tk.
 
 A command-line interface will be created in TCL that can be used as
@@ -11,24 +13,24 @@ required on the platform before the application can run.
 The objective of the CLI is to mimick the Todo.sh CLI from todotxt.com.
 
 Actions:
-*	add | a
-*	addto
-*	append | app
-*	archive
-*	del | rm
-*	depri | dp
-*	do
-*	help
-*	list | ls
-*	listall | lsa
-*	listcon | lsc
-*	listfile | lf
-*	listpri | lsp
-*	listproj | lsprj
-*	move | mv
-*	prepend | prep
-*	pri | p
-*	replace
+* add | a
+* addto
+* append | app
+* archive
+* del | rm
+* depri | dp
+* do
+* help
+* list | ls
+* listall | lsa
+* listcon | lsc
+* listfile | lf
+* listpri | lsp
+* listproj | lsprj
+* move | mv
+* prepend | prep
+* pri | p
+* replace
 
 
 h1. Command Shortcuts
