@@ -2,17 +2,16 @@ h1. TickleList
 
 Tickle List is an implementation of Todo.txt in TCL/Tk.
 
-A command-line interface will be created in TCL that can be used as
-a stand-alone product. A GUI client will be built using Tk.
+A command-line interface will be created in TCL that can be used as a stand-alone product. A GUI 
+client will be built using Tk.
 
-The application will take advantage of TCL/Tk's platform agnostic
-syntax to be cross-platform compatible. The applications should be
-able to run on LINUX, Mac OS X, and Windows. A TCL interpreter is
-required on the platform before the application can run.
+The application will take advantage of TCL/Tk's platform agnostic syntax to be cross-platform 
+compatible. The applications should be able to run on LINUX, Mac OS X, & Windows. A TCL interpreter 
+is required on the platform before the application can run.
 
 The objective of the CLI is to mimick the Todo.sh CLI from todotxt.com.
 
-Actions:
+*Actions:*
 * add | a
 * addto
 * append | app
@@ -35,9 +34,9 @@ Actions:
 
 h1. Command Shortcuts
 
-The t.bat file is a Windows Batch file to create a shorter command to run the program.
-The batch calls the interpreter with the program file and any command line parameters
-passed in also. It could be renamed to something else if prefered.
+The t.bat file is a Windows Batch file to create a shorter command to run the program. The batch 
+calls the interpreter with the program file and any command line parameters passed in also. It could
+be renamed to something else if prefered.
 
 On Mac OS X, I added the following line to my .bash_profile that also acts as a shortcut:
 @alias t='tclsh tl.tcl'@
