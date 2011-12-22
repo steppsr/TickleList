@@ -40,8 +40,8 @@ h1. Command Shortcuts
 The *t.bat* file is a Windows Batch file to create a shorter command to run the program. The batch 
 calls the interpreter with the program file and any command line parameters passed in also. It could
 be renamed to something else if prefered.
-@ @echo off@
-@ tclsh tl.tcl %*@
+@echo off@
+@tclsh tl.tcl %*@
 
 *Mac OS X*
 I added the following line to my *.bash_profile* that also acts as a shortcut:
