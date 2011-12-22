@@ -13,6 +13,7 @@ The objective of the CLI is to mimick the Todo.sh CLI from todotxt.com.
 
 *Actions:*
 * add | a
+* addm
 * addto
 * append | app
 * archive
@@ -30,6 +31,8 @@ The objective of the CLI is to mimick the Todo.sh CLI from todotxt.com.
 * prepend | prep
 * pri | p
 * replace
+* report
+* shorthelp
 
 
 h1. Command Shortcuts

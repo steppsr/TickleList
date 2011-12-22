@@ -4,7 +4,7 @@
 #                                                                             #
 # ----------------------------------------------------------------------------#
 # ACTION add			COMPLETE 2011-12-15 SRS
-# ACTION addm			
+# ACTION addm			COMPLETE 2011-12-21 SRS
 # ACTION addto			COMPLETE 2011-12-16 SRS
 # ACTION append			COMPLETE 2011-12-16 SRS
 # ACTION archive		COMPLETE 2011-12-20 SRS
@@ -12,23 +12,21 @@
 # ACTION del			COMPLETE 2011-12-16 SRS
 # ACTION depri			COMPLETE 2011-12-19 SRS
 # ACTION do				COMPLETE 2011-12-16 SRS
-# ACTION help			
+# ACTION help			COMPLETE 2011-12-21 SRS
 # ACTION list			COMPLETE 2011-12-15 SRS
-# ACTION listall		
-# ACTION listcon		
-# ACTION listfile		
-# ACTION listpri		
-# ACTION listproj		
+# ACTION listall		COMPLETE 2011-12-21 SRS
+# ACTION listcon		COMPLETE 2011-12-21 SRS
+# ACTION listfile		COMPLETE 2011-12-21 SRS
+# ACTION listpri		COMPLETE 2011-12-21 SRS
+# ACTION listproj		COMPLETE 2011-12-21 SRS
 # ACTION move			COMPLETE 2011-12-20 SRS
-# ACTION prepend		
 # ACTION pri			COMPLETE 2011-12-19 SRS
-# ACTION replace		
-# ACTION report		
-# ACTION shorthelp		
+# ACTION prepend		COMPLETE 2011-12-21 SRS
+# ACTION replace		COMPLETE 2011-12-21 SRS
+# ACTION report			COMPLETE 2011-12-21 SRS
+# ACTION shorthelp		COMPLETE 2011-12-21 SRS
 #
-# TODO - Need to code the show_usage proc.
 # TODO - Need to allow options passed as arguments.
-#
 
 # =============================================================================
 # =============================================================================
@@ -36,129 +34,170 @@
 # =============================================================================
 # =============================================================================
 proc read_datafile {filename} {
-	##
-	## Read in a data file
-	##
+	#
+	#   Read in a data file
+	#
+	
 	set fp [open $filename r]
 	set file_data [read $fp]
 	close $fp
 	return $file_data
 }
 
-proc show_usage { {action "help"} } {
-	##
-	## Show usage and exit
-	##
-	## Maybe add in these options in the future: <<SCRIPTNAME>> [-fhpantvV] [-d todo_config] action [task_number] [task_description]
-	set oneline {<<SCRIPTNAME>> action [task_number] [task_description]}
-
+proc show_usage { {action "help"} {show_oneline true} {exit_after true}} {
+	#
+	#   Show usage and exit
+	#
+	#   Maybe add in these options in the future: <<COMMAND SHORTCUT>> [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+	
+	set oneline {<<COMMAND SHORTCUT>> action [task_number] [task_description]}
+	if {$show_oneline} {
+		puts ""
+		puts "USAGE: $oneline"
+		puts ""
+	}
 	switch -exact -- $action {
 	
+		add {
+			puts {   add "THING I NEED TO DO +project @context"}
+			puts {   a "THING I NEED TO DO +project @context"}
+			puts {      Adds THING I NEED TO DO to your todo.txt file on its own line.}
+			puts {      Project and context notation optional. Quotes optional.}
+		}
+		addm {
+			puts {   addm "FIRST THING I NEED TO DO +project1 @context}
+			puts {   SECOND THING I NEED TO DO +project2 @context"}
+			puts {      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and}
+			puts {      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.}
+			puts {      Project and context notation optional. Quotes optional.}
+			
+		}
 		addto	{
-			puts ""
-			puts "USAGE: $oneline"
-			puts ""
 			puts {   addto DEST "TEXT TO ADD"}
-			puts ""
-			puts {   Adds a line of text to any file located in the todo.txt directory.}
-			puts {   For example, addto inbox.txt "decide about vacation"}
-			puts ""
+			puts {      Adds a line of text to any file located in the todo.txt directory.}
+			puts {      For example, addto inbox.txt "decide about vacation"}
 		}
 		
 		append	{
-			puts ""
-			puts "USAGE: $oneline"
-			puts ""
 			puts {   append ITEM# "TEXT TO APPEND"}
 			puts {   app ITEM# "TEXT TO APPEND"}
-			puts ""
-			puts {   Adds TEXT TO APPEND to the end of the task on line ITEM#.}
-			puts {   Quotes optional.}
-			puts ""
+			puts {      Adds TEXT TO APPEND to the end of the task on line ITEM#.}
+			puts {      Quotes optional.}
+		}
+		
+		archive {
+			puts {   archive}
+			puts {      Moves all done tasks from todo.txt to done.txt and removes blank lines.}
 		}
 		
 		del {
-			puts ""
-			puts "USAGE: $oneline"
-			puts ""
 			puts {   del ITEM# [TERM]}
 			puts {   rm ITEM# [TERM]}
-			puts ""
-			puts {   Deletes the task on line ITEM# in todo.txt.}
-			puts {   If TERM specified, deletes only TERM from the task.}
-			puts ""
-		}
-		
-		do {
-			puts ""
-			puts "USAGE: $oneline"
-			puts ""
-			puts {   do ITEM#[, ITEM#, ITEM#, ...]}
-			puts ""
-			puts {   Marks task(s) on line ITEM# as done in todo.txt.}
-			puts ""
+			puts {      Deletes the task on line ITEM# in todo.txt.}
+			puts {      If TERM specified, deletes only TERM from the task.}
 		}
 		
 		depri {
-			puts ""
-			puts "USAGE: $oneline" 
-			puts ""
 			puts {   depri ITEM#[, ITEM#, ITEM#, ...]}
 			puts {   dp ITEM#[, ITEM#, ITEM#, ...]}
-			puts ""
-			puts {   Deprioritizes (removes the priority) from the task(s) on line ITEM# in todo.txt.}
-			puts ""
+			puts {      Deprioritizes (removes the priority) from the task(s) on line ITEM# in todo.txt.}
+		}
+		
+		do {
+			puts {   do ITEM#[, ITEM#, ITEM#, ...]}
+			puts {      Marks task(s) on line ITEM# as done in todo.txt.}
 		}
 		
 		help	{
-			puts "USAGE: $oneline" ;# TODO - Need to code the show_usage proc.
+			puts {   help}
+			puts {      Display this help message.}
+		}
+		list	{
+			puts {   list [TERM...]}
+			puts {   ls [TERM...]}
+			puts {      Displays all tasks that contain TERM(s) sorted by priority with line}
+			puts {      numbers.  If no TERM specified, lists entire todo.txt.}
+		}
+		listall	{
+			puts {   listall [TERM...]}
+			puts {   lsa [TERM...]}
+			puts {      Displays all the lines in todo.txt AND done.txt that contain TERM(s)}
+			puts {      sorted by priority with line  numbers.  If no TERM specified, lists}
+			puts {      entire todo.txt AND done.txt concatenated and sorted.}
+		}
+		listcon {
+			puts {   listcon}
+			puts {   lsc}
+			puts {      Lists all the task contexts that start with the @ sign in todo.txt.}
+		}
+		listfile {
+			puts {   listfile [SRC [TERM...]]}
+			puts {   lf [SRC [TERM...]]}
+			puts {      Displays all the lines in SRC file located in the todo.txt directory,}
+			puts {      sorted by priority with line  numbers.  If TERM specified, lists}
+			puts {      all lines that contain TERM in SRC file.}
+			puts {      Without any arguments, the names of all text files in the todo.txt}
+			puts {      directory are listed.}
+		}
+		listpri {
+			puts {   listpri [PRIORITY] [TERM...]}
+			puts {   lsp [PRIORITY] [TERM...]}
+			puts {      Displays all tasks prioritized PRIORITY.}
+			puts {      If no PRIORITY specified, lists all prioritized tasks.}
+			puts {      If TERM specified, lists only prioritized tasks that contain TERM.}
+		}
+		listproj {
+			puts {   listproj}
+			puts {   lsprj}
+			puts {      Lists all the projects that start with the + sign in todo.txt.}
 		}
 		
 		move	{
-			puts ""
-			puts "USAGE: $oneline"
-			puts ""
 			puts {   move ITEM# DEST [SRC]}
 			puts {   mv ITEM# DEST [SRC]}
-			puts ""
-			puts {   Moves a line from source text file (SRC) to destination text file (DEST).}
-			puts {   Both source and destination file must be located in the directory defined}
-			puts {   in the configuration directory.  When SRC is not defined it's by default todo.txt.}
-			puts ""
+			puts {      Moves a line from source text file (SRC) to destination text file (DEST).}
+			puts {      Both source and destination file must be located in the directory defined}
+			puts {      in the configuration directory.  When SRC is not defined it's by default todo.txt.}
 		}
 
 		prep {
-			puts ""
-			puts "USAGE: $oneline"
-			puts ""
 			puts {   prepend ITEM# "TEXT TO PREPEND"}
 			puts {   prep ITEM# "TEXT TO PREPEND"}
-			puts ""
-			puts {   Adds TEXT TO PREPEND to the beginning of the task on line ITEM#.}
-			puts {   Quotes optional.}
-			puts ""
+			puts {      Adds TEXT TO PREPEND to the beginning of the task on line ITEM#. Quotes optional.}
 		}
 			 
 		pri {
-			puts ""
-			puts "USAGE: $oneline"
-			puts ""
 			puts {   pri ITEM# PRIORITY}
 			puts {   p ITEM# PRIORITY}
-			puts ""
-			puts {   Adds PRIORITY to task on line ITEM#.  If the task is already}
-			puts {   prioritized, replaces current priority with new PRIORITY.}
-			puts {   PRIORITY must be an uppercase letter between A and Z.}
-			puts ""
+			puts {      Adds PRIORITY to task on line ITEM#.  If the task is already}
+			puts {      prioritized, replaces current priority with new PRIORITY.}
+			puts {      PRIORITY must be an uppercase letter between A and Z.}
+		}
+		
+		replace	{
+			puts {   replace ITEM# "UPDATED TODO"}
+			puts {      Replaces task on line ITEM# with UPDATED TODO.}
+		}
+		report {
+			puts {   report}
+			puts {      dds the number of open tasks and done tasks to report.txt.}
+		}
+		shorthelp {
+			puts {   shorthelp}
+			puts {      List the one-line usage of all built-in and add-on actions.}
 		}
 	}
-	exit -1;
+	puts ""
+	if {$exit_after} {
+		exit -1;
+	}
 }
 
 proc show_result {data} {
-	##
-	## Show the resulting filtered/sorted list
-	##	
+	#
+	#   Show the resulting filtered/sorted list
+	#	
+	
 	set shown_counter 0
 	set total_counter 0
 	foreach line $data {
@@ -169,9 +208,10 @@ proc show_result {data} {
 }
 
 proc show_header {} {
-	##
-	## Show the header
-	##
+	#
+	#   Show the header
+	#
+	
 	show_divider " "
 	show_divider
 	puts " Tickle List ... The TCL Todo.txt Implementation "
@@ -179,20 +219,21 @@ proc show_header {} {
 }
 
 proc show_footer {shown total todo_path_n_file} {
-	##
-	## Show the footer
-	##
+	#
+	#   Show the footer
+	#
+	
 	puts ".."
 	puts "TODO: $shown of $total shown from $todo_path_n_file"
 }
 
 proc show_divider { {div_char -} } {
-	##
-	## Show a divider to the screen
-	##    Input:	character to use for divider bar
-	##				if none, default is a dash
-	##				" " will simulate a blank line
-	##
+	#
+	# Show a divider to the screen
+	#    Input:	character to use for divider bar
+	#			if none, default is a dash
+	#			" " will simulate a blank line
+	
 	set div_bar ""
 	for {set i 1} {$i < 49} {incr i} {
 		set div_bar [concat [string trim $div_bar][string trim $div_char]]
@@ -201,68 +242,68 @@ proc show_divider { {div_char -} } {
 }
 
 proc get_arguments {argc argv} {
-	##
-	## Get the arguments passed in from command line & process them accordingly
-	##
-	## TODO - Need to recognize the options from the arguments and deal with.
-	##		OPTIONS TO SUPPORT
-	## 			-@	
-	##				Hide context names in list output. Use twice to show
-	##				context names (default).
-	##
-	##			-+	
-	##				Hide project names in list output. Use twice to show
-	##				project names (default).
-	##
-	##			-c	
-	##				Color mode   (MAY NOT BE POSSIBLE IN WINDOWS)
-	##
-	##			-d CONFIG_FILE	
-	##				Use a configuration file other than the default 
-	##				~/.todo/config
-	##
-	##			-f
-	##				Forces actions without confirmation or interactive input
-	##
-	##			-h
-	##				Display a short help message; same as action "shorthelp"
-	##
-	##			-p
-	##				Plain mode turns off colors
-	##
-	##			-P
-	##				Hide priority labels in list output. Use twice to show
-	##				priority labels (default).
-	##
-	##			-a
-	##				Don't auto-archive tasks automatically on completion
-	##
-	##			-A
-	##				Auto-archive tasks automatically on completion
-	##
-	##			-n
-	##				Preserve line numbers
-	##
-	##			-t
-	##				Prepend the current date to a task automatically when it's added
-	##
-	##			-T
-	##				Do not prepend the current date to a task automatically when
-	##				it's added.
-	##
-	##			-v
-	##				Verbose mode turns on confirmation messages
-	##
-	##			-vv
-	##				Extra verbose mode prints some debugging information and
-	##				additional help text.
-	##
-	##			-V
-	##				Displays version, license and credits
-	##
-	##			-x
-	##				Disables TODOTXT_FINAL_FILTER
-	##
+	#
+	# Get the arguments passed in from command line & process them accordingly
+	#
+	# TODO - Need to recognize the options from the arguments and deal with.
+	#		OPTIONS TO SUPPORT
+	# 			-@	
+	#				Hide context names in list output. Use twice to show
+	#				context names (default).
+	#
+	#			-+	
+	#				Hide project names in list output. Use twice to show
+	#				project names (default).
+	#
+	#			-c	
+	#				Color mode   (MAY NOT BE POSSIBLE IN WINDOWS)
+	#
+	#			-d CONFIG_FILE	
+	#				Use a configuration file other than the default 
+	#				~/.todo/config
+	#
+	#			-f
+	#				Forces actions without confirmation or interactive input
+	#
+	#			-h
+	#				Display a short help message; same as action "shorthelp"
+	#
+	#			-p
+	#				Plain mode turns off colors
+	#
+	#			-P
+	#				Hide priority labels in list output. Use twice to show
+	#				priority labels (default).
+	#
+	#			-a
+	#				Don't auto-archive tasks automatically on completion
+	#
+	#			-A
+	#				Auto-archive tasks automatically on completion
+	#
+	#			-n
+	#				Preserve line numbers
+	#
+	#			-t
+	#				Prepend the current date to a task automatically when it's added
+	#
+	#			-T
+	#				Do not prepend the current date to a task automatically when
+	#				it's added.
+	#
+	#			-v
+	#				Verbose mode turns on confirmation messages
+	#
+	#			-vv
+	#				Extra verbose mode prints some debugging information and
+	#				additional help text.
+	#
+	#			-V
+	#				Displays version, license and credits
+	#
+	#			-x
+	#				Disables TODOTXT_FINAL_FILTER
+	
 	global action
 	global terms
 	global debug
@@ -296,15 +337,59 @@ proc get_arguments {argc argv} {
 	}
 }
 
+proc filter_list_by_priority {data terms} {
+	#
+	#   Filter the passed in data and only return lines that contain the matching priority
+	#   and that contain the rest of the terms
+	#
+	global shown_counter
+	
+	set shown_counter 0
+	set result ""
+	set loopcount 1
+	set linecounter 1
+	set filter ""
+	
+	set priority [lindex $terms 0]
+	if {[string length $priority] == 1} {
+		set priority "($priority)"
+	}
+	set filter [lrange $terms 1 [llength $terms]]
+	
+	foreach line $data {
+		if {[get_priority $line] == $priority} {
+			if {[string length $filter] > 0} {
+				if {[string first $filter $line] >= 0} {
+					set result [append result "{" [string trim $line] " " $linecounter "} "]
+					incr loopcount
+					incr shown_counter
+				}
+			} else {
+				set result [append result "{" [string trim $line] " " $linecounter "} "]
+				incr loopcount
+				incr shown_counter
+			}
+		}
+		incr linecounter
+	}
+	set result [lsort -ascii $result]
+	set new_res ""
+	foreach line $result {
+		set split_line [split $line " "]
+		set new_res [append new_res "{" [format "%02d" [lindex $split_line [expr [llength $split_line] - 1]]] " " [lrange $split_line 0 [expr [llength $split_line] - 2]] "} "]
+	}
+	set result $new_res
+	return $result
+}
+
 proc filter_list {data terms} {
-	##
-	## Filter the passed in data and only return lines that contain
-	##    the terms
-	##
+	#
+	#   Filter the passed in data and only return lines that contain the terms
+	#
 	global debug
 	global shown_counter
-	set shown_counter 0
 	
+	set shown_counter 0
 	set result ""
 	set loopcount 1
 	set linecounter 1
@@ -313,13 +398,8 @@ proc filter_list {data terms} {
 		foreach line $data {
 			if ![string equal $line ""] {
 				if {[string first $terms $line] >= 0} {
-					if {$loopcount == 1} {
-						set result [append result "{" $linecounter " " [string trim $line] "} "]
-						incr loopcount
-					} else {
-						set result [append result " {" $linecounter " " [string trim $line] "} "]
-						incr loopcount
-					}
+					set result [append result "{" [string trim $line] " " $linecounter "} "]
+					incr loopcount
 					incr shown_counter
 				}
 				incr linecounter
@@ -328,22 +408,27 @@ proc filter_list {data terms} {
 	} else {
 		foreach line $data {
 			if ![string equal $line ""] {
-				if {$loopcount == 1} {
-					set result [append result "{" $linecounter " " [string trim $line] "} "]
-					incr loopcount
-				} else {
-					set result [append result " {" $linecounter " " [string trim $line] "} "]
-					incr loopcount
-				}
+				set result [append result "{" [string trim $line] " " $linecounter "} "]
+				incr loopcount
 				incr shown_counter
 				incr linecounter
 			}
 		}
 	}
+	set result [lsort -ascii $result]
+	set new_res ""
+	foreach line $result {
+		set split_line [split $line " "]
+		set new_res [append new_res "{" [format "%02d" [lindex $split_line [expr [llength $split_line] - 1]]] " " [lrange $split_line 0 [expr [llength $split_line] - 2]] "} "]
+	}
+	set result $new_res
 	return $result
 }
 
 proc calc_total_counter {data} {
+	#
+	#
+	#
 	set loopcounter 0
 	foreach line $data {
 		if ![string equal $line ""] {
@@ -354,10 +439,10 @@ proc calc_total_counter {data} {
 }
 
 proc add_to {out_file new_item} {
-	##
-	##	It is assumed that after writing to the file the cursor is left
-	##	at the end of the last item and not returned to a empty line.
-	##
+	#
+	#	It is assumed that after writing to the file the cursor is left
+	#	at the end of the last item and not returned to a empty line.
+	#
 	set fp [open $out_file "a"]
 	puts $fp ""						;# advance to a new line
 	puts -nonewline $fp $new_item	;# leave cursor at end of the line
@@ -365,9 +450,9 @@ proc add_to {out_file new_item} {
 }
 
 proc do_item {data terms} {
-	## 
-	## Marks task(s) on line ITEM# as done in todo.txt.
-	## 
+	# 
+	#   Marks task(s) on line ITEM# as done in todo.txt.
+	# 
 	global debug
 	global todo_path_n_file
 	
@@ -429,7 +514,7 @@ proc do_item {data terms} {
 
 proc del_item {data terms} {
 	#
-	# Loop through and eliminate the given item (the first term)
+	#   Loop through and eliminate the given item (the first term)
 	#
 	global todo_path_n_file
 	set loopcount 1
@@ -456,7 +541,7 @@ proc del_item {data terms} {
 
 proc del_term {data terms} {
 	#
-	# Loop though and eliminate the given term from the given item
+	#   Loop though and eliminate the given term from the given item
 	#
 	global todo_path_n_file
 	set loopcount 1
@@ -495,7 +580,7 @@ proc del_term {data terms} {
 
 proc append_term {data terms} {
 	#
-	# Adds TEXT TO APPEND to the end of the task on line ITEM#.
+	#   Adds TEXT TO APPEND to the end of the task on line ITEM#.
 	#
 	global todo_path_n_file
 	set loopcount 1
@@ -530,7 +615,7 @@ proc append_term {data terms} {
 
 proc depri_item {data terms} {
 	#
-	# Deprioritizes (removes the priority) from the task(s) on line ITEM# in todo.txt.
+	#   Deprioritizes (removes the priority) from the task(s) on line ITEM# in todo.txt.
 	#
 	global todo_path_n_file
 	set loopcount 1
@@ -615,7 +700,7 @@ proc pri_item {data terms} {
 
 proc archive_items {data} {
 	#
-	# Moves all done tasks from todo.txt to done.txt and removes blank lines.
+	#   Moves all done tasks from todo.txt to done.txt and removes blank lines.
 	#
 	global todo_path_n_file
 	global done_path_n_file
@@ -683,22 +768,30 @@ proc has_start_date {line} {
 	return [valid_date $start_date]
 }
 
+proc get_priority {line} {
+	#
+	#   Get the priority of the item, if not return an empty string
+	#
+	set result ""
+	if {[has_priority $line]} {
+		set result [string range $line 0 2]
+	}
+	return $result
+}
+
 proc get_start_date {line} {
 	#
-	# Get the start date if the item contains it, if not return empty string
+	#   Get the start date if the item contains it, if not return empty string
 	#
 	if {[has_start_date $line]} {
 		set split_line [split $line " "]
 		if {[is_complete $line]} {
-			# completed item
-			set start_date [lindex $split_line 2]
+			set start_date [lindex $split_line 2]		;# completed item
 		} else {
 			if {[has_priority $line]} {
-				# incomplete item with priority
-				set start_date [lindex $split_line 1]
+				set start_date [lindex $split_line 1]	;# incomplete item with priority
 			} else {
-				# incomplete item without priority
-				set start_date [lindex $split_line 0]
+				set start_date [lindex $split_line 0]	;# incomplete item without priority
 			}
 		}
 		if {[valid_date $start_date]} {
@@ -708,11 +801,41 @@ proc get_start_date {line} {
 	return ""
 }
 
+proc get_completion_date {line} {
+	#
+	#   Get the completion date if the item is completed, if not return empty string
+	#
+	set result ""
+	if {[is_complete $line]} {
+		set result [string range $line 2 11]
+	}
+	return $result
+}
+
+proc get_task_only {line} {
+	#
+	#   Get the task without completion flag, completion date, priority, or start date
+	#
+	set result $line
+	if {[is_complete $line] && [has_start_date $line]} {
+		set result [string range $line 24 [string length $line]]
+	} elseif {[is_complete $line] && ![has_start_date $line]} {
+		set result [string range $line 13 [string length $line]]
+	} elseif {![is_complete $line] && [has_priority $line] && [has_start_date $line]} {
+		set result [string range $line 15 [string length $line]]
+	} elseif {![is_complete $line] && ![has_priority $line] && [has_start_date $line]} {
+		set result [string range $line 11 [string length $line]]
+	} elseif {![is_complete $line] && [has_priority $line] && ![has_start_date $line]} {
+		set result [string range $line 4 [string length $line]]
+	}
+	return $result
+}
+
 proc move_item {terms} {
 	#
-	# Moves a line from source text file (SRC) to destination text file (DEST).
-	# Both source and destination file must be located in the directory defined
-	# in the configuration directory.  When SRC is not defined it's by default todo.txt. 
+	#   Moves a line from source text file (SRC) to destination text file (DEST).
+	#   Both source and destination file must be located in the directory defined
+	#   in the configuration directory.  When SRC is not defined it's by default todo.txt. 
 	#
 	global todo_path_n_file
 	set loopcount 1
@@ -804,15 +927,104 @@ proc prepend_term {data terms} {
 				puts $fp ""
 			}
 			# Prepend to the beginning of the item
-			# TODO	Need to do the prepend after the priority, completion, and start date
-			#		Also if prepend string begins with a date, then replace the existing start date
+			set start_date ""
+			set priority ""
+			set task ""
 			set prep_str [lrange $terms 1 [llength $terms]]
-			set line [append $line $prep_str " " $line]
+			set task [get_task_only $line]
+			
+			if {[has_start_date $line]} {
+				set start_date [get_start_date $line]
+				set start_date [append $start_date $start_date " "]
+			}
+			
+			if {[has_priority $line]} {
+				set priority [get_priority $line]
+				set priority [append $priority $priority " "]
+			}
+			
+			if {[is_complete $line]} {
+				set line [append $line "x " [get_completion_date $line] " " $start_date $prep_str " " $task]
+			} else {
+				set line [append $line $priority $start_date $prep_str " " $task]
+			}
 			puts -nonewline $fp $line
 		}
 		incr loopcount
 	}
 	close $fp
+}
+
+proc replace_item {data terms} {
+	#
+	#
+	#
+	
+	global todo_path_n_file
+	set loopcount 1
+	set itemno [lindex $terms 0]
+	
+	# Ensure the itemno is a number
+	if {![string is integer -strict $itemno]} {
+		show_usage "replace"
+	}
+	
+	set fp [open $todo_path_n_file "w"]
+	foreach line $data {
+		if {$loopcount != 1} {
+			puts $fp ""
+		}
+		if {$loopcount != $itemno} {
+			puts -nonewline $fp $line
+		} else {
+			# This is the line to replace
+			set line [join [lrange $terms 1 [llength $terms]] " "]
+			puts -nonewline $fp $line
+		}
+		incr loopcount
+	}
+	close $fp
+}
+
+proc update_report {} {
+	#
+	#
+	#
+	
+	global todo_path_n_file
+	global done_path_n_file
+	global rept_path_n_file
+	
+	set fp_todo [open $todo_path_n_file "r"]
+	set fp_done [open $done_path_n_file "r"]
+	set fp_report [open $rept_path_n_file "w"]
+	
+	set todo_count 0
+	set done_count 0
+	set total_count 0
+	set sys_time [clock seconds]
+	set report_date [clock format $sys_time -format %Y-%m-%d]
+	
+	puts $fp_report "Tickle List - Report.txt"
+	puts $fp_report "------------------------------------------------------------------------------"
+	set file_data [read_datafile $todo_path_n_file]
+	set data [split $file_data "\n"]
+	foreach line $data {
+		incr todo_count
+		incr total_count
+		puts $fp_report $line
+	}
+	
+	set file_data [read_datafile $done_path_n_file]
+	set data [split $file_data "\n"]
+	foreach line $data {
+		incr done_count
+		incr total_count
+		puts $fp_report $line
+	}
+	
+	puts $fp_report "------------------------------------------------------------------------------"
+	puts $fp_report "$report_date  TODO:$todo_count DONE:$done_count TOTAL:$total_count"
 }
 
 # =============================================================================
@@ -822,6 +1034,7 @@ proc prepend_term {data terms} {
 # =============================================================================
 global todo_path_n_file
 global done_path_n_file
+global rept_path_n_file
 
 global shown_counter
 global total_counter
@@ -845,6 +1058,7 @@ set fn todo.txt ;# TODO - Allow for diff filename from command line argument
 set dir [file dirname [info script]]
 set todo_path_n_file [file join $dir $fn]
 set done_path_n_file [file join $dir "done.txt"]
+set rept_path_n_file [file join $dir "report.txt"]
 
 # Get the data from the file
 set file_data [read_datafile $todo_path_n_file]
@@ -855,42 +1069,38 @@ set total_counter [calc_total_counter $data]
 set shown_counter $total_counter	;# default to total because we havent filtered anything yet
 
 switch -exact -- $action {
-	ls		-
-	list	{
-		#  list [TERM...]
-		#  ls [TERM...]
-		#
-		#  Displays all tasks that contain TERM(s) sorted by priority with line
-		#  numbers. If no TERM specified, lists entire todo.txt
-		#
-		#  TODO - sort $data by priority (after filter)
-		set list_data $data
-		set list_data [filter_list $list_data $terms]
-		show_divider " "
-		show_result $list_data
-		show_footer $shown_counter $total_counter $todo_path_n_file
-		show_divider " "
-	}
-	
 	a		-
 	add		{
-		# add "THING I NEED TO DO +project @context"
-		# a "THING I NEED TO DO +project @context"
+		#   add "THING I NEED TO DO +project @context"
+		#   a "THING I NEED TO DO +project @context"
 		#
-		# Adds THING I NEED TO DO to your todo.txt file on its own line.
-		# Project and context notation optional.
-		# Quotes optional.
+		#      Adds THING I NEED TO DO to your todo.txt file on its own line.
+		#      Project and context notation optional. Quotes optional.
 		#
 		# TODO - Determine the out_file to write to ($out_file)
 		set out_file "todo.txt"
 		add_to $out_file $terms
 	}
 	
+	addm	{
+		#   addm "FIRST THING I NEED TO DO +project1 @context
+		#   SECOND THING I NEED TO DO +project2 @context"
+		#      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and
+		#      Adds SECOND THING I NEED TO DO to you todo.txt on its own line.
+		#      Project and context notation optional. Quotes optional.
+		
+		set out_file "todo.txt"
+		add_to $out_file $terms
+		gets stdin second_line
+		add_to $out_file $second_line
+	}
+	
 	addto	{
-		# addto DEST "TEXT TO ADD"
+		#   addto DEST "TEXT TO ADD"
 		#
-		# Adds a line of text to any file located in the todo.txt directory.
-		# For example, addto inbox.txt "decide about vacation"
+		#      Adds a line of text to any file located in the todo.txt directory.
+		#      For example, addto inbox.txt "decide about vacation"
+		
 		set ptr [string first " " $terms]
 		set out_file [string range $terms 0 $ptr]
 		if { [file exists $out_file] == 1} {
@@ -903,19 +1113,19 @@ switch -exact -- $action {
 	}
 	
 	do		{
-		# do ITEM#[, ITEM#, ITEM#, ...]
+		#   do ITEM#[, ITEM#, ITEM#, ...]
 		#
-		# Marks task(s) on line ITEM# as done in todo.txt.
+		#      Marks task(s) on line ITEM# as done in todo.txt.
 		do_item $data $terms
 	}
 	
 	rm		-
 	del		{
-		# del ITEM# [TERM]
-		# rm ITEM# [TERM]
+		#   del ITEM# [TERM]
+		#   rm ITEM# [TERM]
 		#
-		# Deletes the task on line ITEM# in todo.txt.
-		# If TERM specified, deletes only TERM from the task.
+		#      Deletes the task on line ITEM# in todo.txt.
+		#      If TERM specified, deletes only TERM from the task.
 		if {[llength $terms] > 1} {
 			del_term $data $terms
 		} elseif {[llength $terms] == 1} {
@@ -928,11 +1138,11 @@ switch -exact -- $action {
 	
 	app		-
 	append	{
-		# append ITEM# "TEXT TO APPEND"
-		# app ITEM# "TEXT TO APPEND"
+		#   append ITEM# "TEXT TO APPEND"
+		#   app ITEM# "TEXT TO APPEND"
 		#
-		# Adds TEXT TO APPEND to the end of the task on line ITEM#.
-		# Quotes optional.
+		#      Adds TEXT TO APPEND to the end of the task on line ITEM#.
+		#      Quotes optional.
 		
 		# Ensure we have at least two terms. First is itemno, rest text to append
 		if {[llength $terms] > 1} {
@@ -945,18 +1155,18 @@ switch -exact -- $action {
 	
 	archive {
 		#
-		# Moves all done tasks from todo.txt to done.txt and removes blank lines.
+		#   Moves all done tasks from todo.txt to done.txt and removes blank lines.
 		#
 		archive_items $data
 	}
 	
 	dp		-
 	depri	{
-		# depri ITEM#[, ITEM#, ITEM#, ...]
-		# dp ITEM#[, ITEM#, ITEM#, ...]
+		#   depri ITEM#[, ITEM#, ITEM#, ...]
+		#   dp ITEM#[, ITEM#, ITEM#, ...]
 		#
-		# Deprioritizes (removes the priority) from the task(s)
-		# on line ITEM# in todo.txt.
+		#      Deprioritizes (removes the priority) from the task(s)
+		#      on line ITEM# in todo.txt.
 
 		if {[llength $terms] > 0} {
 			depri_item $data $terms
@@ -966,14 +1176,147 @@ switch -exact -- $action {
 		}
 	}
 	
+	help	{
+		show_usage "add" true false
+		show_usage "addm" false false
+		show_usage "addto" false false
+		show_usage "append" false false
+		show_usage "archive" false false
+		show_usage "del" false false
+		show_usage "depri" false false
+		show_usage "do" false false
+		show_usage "help" false false
+		show_usage "list" false false
+		show_usage "listall" false false
+		show_usage "listcon" false false
+		show_usage "listfile" false false
+		show_usage "listpri" false false
+		show_usage "listproj" false false
+		show_usage "move" false false
+		show_usage "prep" false false
+		show_usage "pri" false false
+		show_usage "replace" false false
+		show_usage "report" false false
+		show_usage "shorthelp" false false
+	}
+	
+	ls		-
+	list	{
+		#   list [TERM...]
+		#   ls [TERM...]
+		#
+		#      Displays all tasks that contain TERM(s) sorted by priority with line
+		#      numbers. If no TERM specified, lists entire todo.txt
+
+		set list_data $data
+		set list_data [filter_list $list_data $terms]
+		show_result $list_data
+		show_footer $shown_counter $total_counter $todo_path_n_file
+	}
+	
+	lsa		-
+	listall	{
+		#   listall [TERM...]
+		#   lsa [TERM...]
+		#
+		#      Displays all the lines in todo.txt AND done.txt that contain TERM(s)
+		#      sorted by priority with line  numbers.  If no TERM specified, lists
+		#      entire todo.txt AND done.txt concatenated and sorted.
+		
+		set files ""
+		set file_data [read_datafile $done_path_n_file]
+		set done_data [split $file_data "\n"]
+		set list_data [concat $data $done_data]
+		set list_data [filter_list $list_data $terms]
+		show_result $list_data
+		set files [append files $todo_path_n_file " & " $done_path_n_file]
+		show_footer $shown_counter [llength $list_data] $files 
+	}
+	
+	lsc		-
+	listcon	{
+		#   listcon
+		#   lsc
+		#
+		#      Lists all the task contexts that start with the @ sign in todo.txt.
+		
+		set list_data $data
+		set list_data [filter_list $list_data "@"]
+		show_result $list_data
+		show_footer $shown_counter $total_counter $todo_path_n_file
+	}
+	
+	lf			-
+	listfile	{
+		#   listfile SRC [TERM...]
+		#   lf SRC [TERM...]
+		#
+		#      Displays all the lines in SRC file located in the todo.txt directory,
+		#      sorted by priority with line  numbers.  If TERM specified, lists
+		#      all lines that contain TERM in SRC file.
+		
+		set src ""
+		set filter ""
+		set file_items 0
+		if {[llength $terms] > 0} {
+			set src [lindex $terms 0]
+			if {[llength $terms] > 1} {
+				set filter [lrange $terms 1 [llength $terms]]
+			}
+			if {[file exists $src]} {
+				set file_data [read_datafile $src]
+				set list_data [split $file_data "\n"]
+				set file_items [llength $list_data]
+				set list_data [filter_list $list_data $filter]
+				show_result $list_data
+				show_footer $shown_counter $file_items $src
+			}
+		} else {
+			puts "TODO: Missing parameter."
+			show_usage "listfile"
+		}
+	}
+	
+	lsp			-
+	listpri		{
+		#   listpri [PRIORITY] [TERM...]
+		#   lsp [PRIORITY] [TERM...]
+		#
+		#      Displays all tasks prioritized PRIORITY.
+		#      If no PRIORITY specified, lists all prioritized tasks.
+		#      If TERM specified, lists only prioritized tasks that contain TERM.
+		if {![llength $terms] > 0} {
+			puts "TODO: Missing parameter."
+			show_usage "listpri"
+		} 
+		
+		set list_data $data
+		set list_data [filter_list_by_priority $list_data $terms]
+		show_result $list_data
+		show_footer $shown_counter $total_counter $todo_path_n_file
+	}
+	
+	lsprj		-
+	listproj	{
+		#   listproj
+		#   lsprj
+		#
+		#      Lists all the projects that start with the + sign in todo.txt.
+		
+		set list_data $data
+		set list_data [filter_list $list_data "+"]
+		show_result $list_data
+		show_footer $shown_counter $total_counter $todo_path_n_file
+	}
+	
 	mv		-
 	move	{
 		#   move ITEM# DEST [SRC]
 		#   mv ITEM# DEST [SRC]
 		#
-		#   Moves a line from source text file (SRC) to destination text file (DEST).
-		#   Both source and destination file must be located in the directory defined
-		#   in the configuration directory.  When SRC is not defined it's by default todo.txt.
+		#      Moves a line from source text file (SRC) to destination text file (DEST).
+		#      Both source and destination file must be located in the directory defined
+		#      in the configuration directory.  When SRC is not defined it's by default todo.txt.
 		
 		if {[llength $terms] > 1} {
 			move_item $terms
@@ -985,7 +1328,13 @@ switch -exact -- $action {
 	
 	p	-
 	pri	{
-	if {[llength $terms] > 1} {
+		#   pri ITEM# PRIORITY
+		#   p ITEM# PRIORITY
+		#      Adds PRIORITY to task on line ITEM#.  If the task is already
+		#      prioritized, replaces current priority with new PRIORITY.
+		#      PRIORITY must be an uppercase letter between A and Z.
+
+		if {[llength $terms] > 1} {
 			pri_item $data $terms
 		} else {
 			puts "TODO: Missing parameter."
@@ -995,11 +1344,11 @@ switch -exact -- $action {
 	
 	prep	-
 	prepend	{
-		#	prepend ITEM# "TEXT TO PREPEND"
-		#	prep ITEM# "TEXT TO PREPEND"
+		#   prepend ITEM# "TEXT TO PREPEND"
+		#   prep ITEM# "TEXT TO PREPEND"
 		#
-		#	Adds TEXT TO PREPEND to the beginning of the task on line ITEM#.
-		#	Quotes optional.
+		#      Adds TEXT TO PREPEND to the beginning of the task on line ITEM#.
+		#      Quotes optional.
 
 		if {[llength $terms] > 1} {
 			prepend_term $data $terms
@@ -1007,5 +1356,62 @@ switch -exact -- $action {
 			puts "TODO: Missing parameter."
 			show_usage "prep"
 		}
+	}
+	
+	replace	{
+		#   replace ITEM# "UPDATED TODO"
+		#
+		#      Replaces task on line ITEM# with UPDATED TODO.
+		
+		if {[llength $terms] > 1} {
+			replace_item $data $terms
+		} else {
+			puts "TODO: Missing parameter."
+			show_usage "replace"
+		}
+	}
+	
+	report {
+		#   report
+		#
+		#      Adds the number of open tasks and done tasks to report.txt.
+		
+		archive_items $data
+		update_report
+	}
+	
+	shorthelp {
+		#   shorthelp
+		#
+		#      List the one-line usage of all built-in and add-on actions.
+		
+		set oneline {<<COMMAND SHORTCUT>> action [task_number] [task_description]}
+		puts ""
+		puts "USAGE: $oneline"
+		puts ""
+		puts {   Actions:}
+		puts {     add|a "THING I NEED TO DO +project @context"}
+		puts {     addm "THINGS I NEED TO DO}
+		puts {           MORE THINGS I NEED TO DO"}
+		puts {     addto DEST "TEXT TO ADD"}
+		puts {     append|app ITEM# "TEXT TO APPEND"}
+		puts {     archive}
+		puts {     del|rm ITEM# [TERM]}
+		puts {     depri|dp ITEM#[, ITEM#, ITEM#, ...]}
+		puts {     do ITEM#[, ITEM#, ITEM#, ...]}
+		puts {     help}
+		puts {     list|ls [TERM...]}
+		puts {     listall|lsa [TERM...]}
+		puts {     listcon|lsc}
+		puts {     listfile|lf [SRC [TERM...]]}
+		puts {     listpri|lsp [PRIORITY] [TERM...]}
+		puts {     listproj|lsprj [TERM...]}
+		puts {     move|mv ITEM# DEST [SRC]}
+		puts {     prepend|prep ITEM# "TEXT TO PREPEND"}
+		puts {     pri|p ITEM# PRIORITY}
+		puts {     replace ITEM# "UPDATED TODO"}
+		puts {     report}
+		puts {     shorthelp}
+		puts ""
 	}
 }
