@@ -6,7 +6,8 @@ A command-line interface will be created in TCL that can be used as a stand-alon
 
 The application will take advantage of TCL/Tk's platform agnostic syntax to be cross-platform compatible. The applications should be able to run on LINUX, Mac OS X, & Windows. A TCL interpreter is required on the platform before the application can run.
 
-The objective of the CLI is to mimick the Todo.sh CLI from "http://todotxt.com":http://todotxt.com
+The objective of the TickleList CLI is to mimick the Todo.sh CLI from "http://todotxt.com":http://todotxt.com
+"https://github.com/ginatrapani/todo.txt-cli/wiki/The-Todo.txt-Format":Todo.txt Spec
 
 *Actions:*
 * add | a
