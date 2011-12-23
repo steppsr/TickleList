@@ -45,5 +45,5 @@ I added the following line to my *.bash_profile* that also acts as a shortcut:
 
 h1. TCL Intrepreter
 
-Tested with ActiveState's TCL Interpreter.
+Tested with ActiveState's TCL Interpreter, which is available for Windows (x86), Windows (64-bit, x64), Mac OS X (10.5+, x86_64/x86), Linux (x86), Linux (x86_64), Mac OS X (Universal).
 "http://www.activestate.com/activetcl/downloads":http://www.activestate.com/activetcl/downloads

@@ -1,7 +1,10 @@
-(A) 2011-06-07 Update Breakout to process two panes of glass +Breakout
-x 2011-06-08 2011-06-07 Fixed the draw of op on combo doors +pk137 @pk
 (B) 2011-06-17 Setup WinIG to run inside VirtualPC in Scheduling off
-x 2011-08-02 2011-06-19 Csmt missin Custom on FC for reps +pk139 @pk
 (A) 2011-06-27 PK Template Setup +pktemplates @top3
 (C) 2011-07-08 UseDealerClientType option for Centerpoint? @CP
 (B) 2011-07-20 Loud Speaker in Glass Dept is not working.
+x 2011-12-21 2011-12-21 Watch the season finale of Tera Nova
+2011-12-21 Watch new episode of The Misfits
+Go Christmas Shopping
+Wrap Christmas presents
+x 2011-12-21 30 minutes on the treadmill
+Pay TimeWarner & Prudential bills
