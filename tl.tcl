@@ -37,10 +37,12 @@ proc read_datafile {filename} {
 	#
 	#   Read in a data file
 	#
-	
-	set fp [open $filename r]
-	set file_data [read $fp]
-	close $fp
+	set file_data ""
+	if {[file exists $filename]} {
+		set fp [open $filename r]
+		set file_data [read $fp]
+		close $fp
+	}
 	return $file_data
 }
 
@@ -711,26 +713,25 @@ proc archive_items {data} {
 	set fp_todo [open $todo_path_n_file "w"]
 	if {[file exists $done_path_n_file] == 1} {
 		set fp_done [open $done_path_n_file "a"]
-		puts $fp_done ""
 	} else {
 		set fp_done [open $done_path_n_file "w"]
 	}
 	
 	foreach line $data {
-		if {[is_complete $line] == 1} {
-			# write to done
-			if {$count_done_items != 0} {
+		if {![string equal [string trim $line] ""]} {
+			if {[is_complete $line] == 1} {
+				# write to done
 				puts $fp_done ""
+				puts -nonewline $fp_done $line
+				incr count_done_items
+			} else {
+				# write to todo
+				if {$count_todo_items > 0} {
+					puts $fp_todo ""
+				}
+				puts -nonewline $fp_todo $line
+				incr count_todo_items
 			}
-			puts -nonewline $fp_done $line
-			incr count_done_items
-		} else {
-			# write to todo
-			if {$count_todo_items > 0} {
-				puts $fp_todo ""
-			}
-			puts -nonewline $fp_todo $line
-			incr count_todo_items
 		}
 	}
 	close $fp_todo
@@ -1025,6 +1026,20 @@ proc update_report {} {
 	
 	puts $fp_report "------------------------------------------------------------------------------"
 	puts $fp_report "$report_date  TODO:$todo_count DONE:$done_count TOTAL:$total_count"
+	
+	close $fp_todo
+	close $fp_done
+	close $fp_report
+}
+
+proc strip_double_quotes {str_source} {
+	set result $str_source
+	set stripped ""
+	regexp {^["](.*)["]$} $str_source match stripped
+	if {![string equal [string trim $stripped] ""]} {
+		set result $stripped
+	}
+	return $result
 }
 
 # =============================================================================
@@ -1055,7 +1070,7 @@ if {$debug == 1} {
 
 # Determine path and filename
 set fn todo.txt ;# TODO - Allow for diff filename from command line argument
-set dir [file dirname [info script]]
+set dir [file dirname [file normalize [info script]]]
 set todo_path_n_file [file join $dir $fn]
 set done_path_n_file [file join $dir "done.txt"]
 set rept_path_n_file [file join $dir "report.txt"]
@@ -1092,6 +1107,7 @@ switch -exact -- $action {
 		set out_file "todo.txt"
 		add_to $out_file $terms
 		gets stdin second_line
+		set second_line [strip_double_quotes $second_line]
 		add_to $out_file $second_line
 	}
 	
@@ -1305,6 +1321,7 @@ switch -exact -- $action {
 		
 		set list_data $data
 		set list_data [filter_list $list_data "+"]
+		set list_data [filter_list $list_data $terms]
 		show_result $list_data
 		show_footer $shown_counter $total_counter $todo_path_n_file
 	}
