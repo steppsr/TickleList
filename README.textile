@@ -36,7 +36,6 @@ h1. Command Shortcuts
 
 *Windows*
 The *t.bat* file is a Windows Batch file to create a shorter command to run the program. The batch calls the interpreter with the program file and any command line parameters passed in also. It could be renamed to something else if prefered.
-@echo off@
 @tclsh tl.tcl %*@
 
 *Mac OS X*
@@ -48,3 +47,18 @@ h1. TCL Intrepreter
 Tested with ActiveState's TCL Interpreter, which is available for 
 Windows (x86), Windows (64-bit, x64), Mac OS X (10.5+, x86_64/x86), Linux (x86), Linux (x86_64), Mac OS X (Universal).
 "http://www.activestate.com/activetcl/downloads":http://www.activestate.com/activetcl/downloads
+
+h1. Add-ons
+
+*clock.tcl*
+This addon file has the ability to clock-in/clock-out of tasks. 
+The clock-in adds a timestamp to the task @in:2011-12-29T13:15:20@ in (_YYYY-MM-DD_ *T* _HH:MM:SS_) format.
+The clock-out removes any clock-in, calculates the elapsed time, and adds the elapsed time to the task @lap:01:15:25@ in (_HH:MM:SS_) format.
+
+*Actions*
+* curr | current
+* in
+* help
+* laps
+* out
+* shorthelp

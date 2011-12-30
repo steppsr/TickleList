@@ -79,7 +79,7 @@ proc show_usage { {action "help"} {show_oneline true} {exit_after true}} {
 			puts {      Adds a line of text to any file located in the todo.txt directory.}
 			puts {      For example, addto inbox.txt "decide about vacation"}
 		}
-		
+
 		append	{
 			puts {   append ITEM# "TEXT TO APPEND"}
 			puts {   app ITEM# "TEXT TO APPEND"}
@@ -199,9 +199,18 @@ proc show_result {data} {
 	#
 	#   Show the resulting filtered/sorted list
 	#	
+	global TODOTXT_FORMAT_LIST
+	global TODOTXT_AGE
 	
 	set shown_counter 0
 	set total_counter 0
+	if {$TODOTXT_FORMAT_LIST} {
+		if {$TODOTXT_AGE} {
+			puts "   |AGE     |LAP     |IN                 |PRI|DONE DATE |ADD DATE  |TASK"
+		} else {
+			puts "   |LAP     |IN                 |PRI|DONE DATE |ADD DATE  |TASK"
+		}
+	}
 	foreach line $data {
 		if ![string equal $line ""] {
 			puts $line
@@ -390,6 +399,8 @@ proc filter_list {data terms} {
 	#
 	global debug
 	global shown_counter
+	global TODOTXT_FORMAT_LIST
+	global TODOTXT_AGE
 	
 	set shown_counter 0
 	set result ""
@@ -421,9 +432,97 @@ proc filter_list {data terms} {
 	set new_res ""
 	foreach line $result {
 		set split_line [split $line " "]
-		set new_res [append new_res "{" [format "%02d" [lindex $split_line [expr [llength $split_line] - 1]]] " " [lrange $split_line 0 [expr [llength $split_line] - 2]] "} "]
+		set itemno [lindex $split_line [expr [llength $split_line] - 1]]
+		set rest [lrange $split_line 0 [expr [llength $split_line] - 2]]
+		set rest [format_task $rest]
+		set new_res [append new_res "{" [format "%02d" $itemno] " " $rest "} "]
 	}
 	set result $new_res
+	return $result
+}
+
+proc get_clock_in {line} {
+	# Return in:time if item has one, otherwise return empty string
+	set result ""
+	if {[regexp {in:(19|20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12]\d|3[01])T(0\d|1\d|2[0-3])[:][0-5]\d[:][0-5]\d} $line match]} {
+		#strip first three chars off "in:"
+		set result [string range $match 3 [string length $match]]
+	}
+	return $result
+}
+
+proc get_lap_time {line} {
+	# Return lap:time if item has one, otherwise return empty string
+	set result ""
+	if {[regexp {lap:(\d\d)[:][0-5]\d[:][0-5]\d} $line match]} {
+		#strip first four chars off "lap:"
+		set result [string range $match 4 [string length $match]]
+	}
+	return $result
+}
+
+proc format_task {line} {
+	global TODOTXT_AGE
+	global TODOTXT_AGE_DIGITS
+	set result ""
+	#
+	# AGE       LAP      IN                  PRI END_DATE   START_DATE TASK
+	# {10 days} 00:15:23 2011-12-30T13:12:30 (A)            2011-11-30 My task 
+	# { 2 days}          2011-12-30T15:30:01  x  2011-12-29 2011-11-15 My task
+	set age [get_age $line]
+	set lap [get_lap_time $line]
+	set clockin [get_clock_in $line]
+	set pri [get_priority $line]
+	set end_date [get_completion_date $line]
+	set start_date [get_start_date $line]
+	set bare [get_task_only $line]
+	
+	if {[string length $age] == 0} {
+		set age_padding [expr {$TODOTXT_AGE_DIGITS + 6}]
+		set age [format "%-*s" $age_padding "|"]
+	}
+	if {[string length $lap] == 0} {
+		set lap "        "
+	}
+	if {[string length $clockin] == 0} {
+		set clockin "                   "
+	}
+	if {[string length $pri] == 0} {
+		set pri "   "
+	}
+	if {[string length $end_date] == 0} {
+		set end_date "          "
+	}
+	if {[string length $start_date] == 0} {
+		set start_date "          "
+	}
+	
+	if {[is_complete $line]} {
+		set pri " x "
+	}
+	if {$TODOTXT_AGE} {
+		set result "$age|$lap|$clockin|$pri|$end_date|$start_date|$bare"
+	} else {
+		set result "|$lap|$clockin|$pri|$end_date|$start_date|$bare"
+	}
+	
+	return $result
+}
+
+proc get_age {line} {
+	global TODOTXT_AGE_DIGITS
+	set result ""
+	if {[has_start_date $line]} {
+		set sys_time [clock seconds]
+		set cur_day [clock format $sys_time -format %Y-%m-%d]
+		set start_day [get_start_date $line]
+		
+		set x [clock scan $start_day]
+		set y [clock scan $cur_day]
+		set diff [expr {$y - $x}]
+		set days_diff [format "%*d" $TODOTXT_AGE_DIGITS [expr {$diff / 86400}]]
+		set result "|$days_diff days"
+	}
 	return $result
 }
 
@@ -445,8 +544,15 @@ proc add_to {out_file new_item} {
 	#	It is assumed that after writing to the file the cursor is left
 	#	at the end of the last item and not returned to a empty line.
 	#
+	global TODOTXT_DATE_ON_ADD
 	set fp [open $out_file "a"]
 	puts $fp ""						;# advance to a new line
+	if {$TODOTXT_DATE_ON_ADD} {
+		if {![has_start_date $new_item]} {
+			set sys_time [clock seconds]
+			set new_item [concat [clock format $sys_time -format %Y-%m-%d] [string trim $new_item]]
+		}
+	}
 	puts -nonewline $fp $new_item	;# leave cursor at end of the line
 	close $fp
 }
@@ -829,7 +935,11 @@ proc get_task_only {line} {
 	} elseif {![is_complete $line] && [has_priority $line] && ![has_start_date $line]} {
 		set result [string range $line 4 [string length $line]]
 	}
-	return $result
+	set clock_in [get_clock_in $line]
+	set lap_time [get_lap_time $line]
+	regsub -all -- " in:$clock_in" [string trim $result] "" result		;# strip out any clockins
+	regsub -all -- " lap:$lap_time" [string trim $result] "" result	;# strip out any laptimes
+	return [string trim $result]
 }
 
 proc move_item {terms} {
@@ -995,6 +1105,8 @@ proc update_report {} {
 	global todo_path_n_file
 	global done_path_n_file
 	global rept_path_n_file
+	global TODOTXT_AGE
+	global TODOTXT_AGE_DIGITS
 	
 	set fp_todo [open $todo_path_n_file "r"]
 	set fp_done [open $done_path_n_file "r"]
@@ -1007,13 +1119,22 @@ proc update_report {} {
 	set report_date [clock format $sys_time -format %Y-%m-%d]
 	
 	puts $fp_report "Tickle List - Report.txt"
-	puts $fp_report "------------------------------------------------------------------------------"
+	puts $fp_report "-------------------------------------------------------------------------------------------------------------------"
+	if {$TODOTXT_AGE} {
+		set age_padding [expr {$TODOTXT_AGE_DIGITS + 6}]
+		set age [format "%-*s" $age_padding "|AGE"]
+		puts $fp_report "$age|LAP     |IN                 |PRI|DONE DATE |ADD DATE  |TASK"
+		puts $fp_report "-------------------------------------------------------------------------------------------------------------------"
+	} else {
+		puts $fp_report "|LAP     |IN                 |PRI|DONE DATE |ADD DATE  |TASK"
+		puts $fp_report "-------------------------------------------------------------------------------------------------------------------"
+	}
 	set file_data [read_datafile $todo_path_n_file]
 	set data [split $file_data "\n"]
 	foreach line $data {
 		incr todo_count
 		incr total_count
-		puts $fp_report $line
+		puts $fp_report [format_task $line]
 	}
 	
 	set file_data [read_datafile $done_path_n_file]
@@ -1021,10 +1142,10 @@ proc update_report {} {
 	foreach line $data {
 		incr done_count
 		incr total_count
-		puts $fp_report $line
+		puts $fp_report [format_task $line]
 	}
 	
-	puts $fp_report "------------------------------------------------------------------------------"
+	puts $fp_report "-------------------------------------------------------------------------------------------------------------------"
 	puts $fp_report "$report_date  TODO:$todo_count DONE:$done_count TOTAL:$total_count"
 	
 	close $fp_todo
@@ -1042,6 +1163,90 @@ proc strip_double_quotes {str_source} {
 	return $result
 }
 
+proc get_settings {config_file} {
+	global TODO_DIR
+	global TODO_FILE
+	global DONE_FILE
+	global REPORT_FILE
+	global TMP_FILE
+	global TODOTXT_AUTO_ARCHIVE
+	global TODOTXT_DATE_ON_ADD
+	global TODOTXT_FORMAT_LIST
+	global TODOTXT_AGE
+	global TODOTXT_AGE_DIGITS
+
+	set TODO_DIR ""
+	set TODO_FILE ""
+	set DONE_FILE ""
+	set REPORT_FILE ""
+	set TMP_FILE ""
+	set TODOTXT_AUTO_ARCHIVE 0
+	set TODOTXT_DATE_ON_ADD 0
+	set TODOTXT_FORMAT_LIST 0
+	set TODOTXT_AGE 0
+	set TODOTXT_AGE_DIGITS 2
+	
+	set key ""
+	set value ""
+	
+	set dir [file dirname [file normalize [info script]]]
+	set cfg [file join $dir $config_file]
+	set cfg_data [read_datafile $cfg]
+	set cfg_items [split $cfg_data "\n"]
+	
+	foreach item $cfg_items {
+		if {![string equal [string index [string trim $item] 0] "#"] && [string length [string trim $item]] > 0} {
+			set kv [split $item "="]
+			set key [lindex $kv 0]
+			set value [lindex $kv 1]
+		}
+		switch -exact -- $key {
+			TODO_DIR	{
+				set TODO_DIR $value
+			}
+			TODO_FILE	{
+				set TODO_FILE $value
+			}
+			DONE_FILE	{
+				set DONE_FILE $value
+			}
+			REPORT_FILE	{
+				set REPORT_FILE $value
+			}
+			TMP_FILE	{
+				set TMP_FILE $value
+			}
+			TODOTXT_AUTO_ARCHIVE	{
+				set TODOTXT_AUTO_ARCHIVE $value
+			}
+			TODOTXT_DATE_ON_ADD		{
+				set TODOTXT_DATE_ON_ADD $value
+			}
+			TODOTXT_FORMAT_LIST		{
+				set TODOTXT_FORMAT_LIST $value
+			}
+			TODOTXT_AGE				{
+				set TODOTXT_AGE $value
+			}
+			TODOTXT_AGE_DIGITS		{
+				set TODOTXT_AGE_DIGITS $value
+			}
+		}
+	}
+}
+
+proc get_env {arg} {
+	# get an ENVIRONMENT variable from the OS
+	global env
+	return $env($arg)
+}
+
+proc refresh_data {path_n_file} {
+	set file_data [read_datafile $path_n_file]
+	set data [split $file_data "\n"]
+	return $data
+}
+
 # =============================================================================
 # =============================================================================
 # ======================== MAIN LOOP ==========================================
@@ -1050,6 +1255,17 @@ proc strip_double_quotes {str_source} {
 global todo_path_n_file
 global done_path_n_file
 global rept_path_n_file
+
+global TODO_DIR
+global TODO_FILE
+global DONE_FILE
+global REPORT_FILE
+global TMP_FILE
+
+global TODOTXT_AUTO_ARCHIVE
+global TODOTXT_DATE_ON_ADD
+global TODOTXT_FORMAT_LIST
+global TODOTXT_AGE
 
 global shown_counter
 global total_counter
@@ -1064,16 +1280,20 @@ if {$debug == 1} {
 
 get_arguments $argc $argv
 
+set TODO_CFG "todo.cfg"	;# TODO honor option for alternate config file
+get_settings $TODO_CFG
+
 if {$debug == 1} {
 	show_divider
 }
 
 # Determine path and filename
-set fn todo.txt ;# TODO - Allow for diff filename from command line argument
-set dir [file dirname [file normalize [info script]]]
+set fn $TODO_FILE
+set dir $TODO_DIR	;# [file dirname [file normalize [info script]]]
 set todo_path_n_file [file join $dir $fn]
-set done_path_n_file [file join $dir "done.txt"]
-set rept_path_n_file [file join $dir "report.txt"]
+set done_path_n_file [file join $dir $DONE_FILE]
+set rept_path_n_file [file join $dir $REPORT_FILE]
+set temp_path_n_file [file join $dir $TMP_FILE]
 
 # Get the data from the file
 set file_data [read_datafile $todo_path_n_file]
@@ -1133,6 +1353,10 @@ switch -exact -- $action {
 		#
 		#      Marks task(s) on line ITEM# as done in todo.txt.
 		do_item $data $terms
+		if {$TODOTXT_AUTO_ARCHIVE} {
+			set data [refresh_data $todo_path_n_file]
+			archive_items $data
+		}
 	}
 	
 	rm		-

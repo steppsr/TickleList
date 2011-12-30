@@ -52,8 +52,9 @@ proc show_usage { {action "help"} {show_oneline true} {exit_after true}} {
 		}
 
 		laps	{
-			puts {   laps}
+			puts {   laps [SOURCE]}
 			puts {      Displays report of all tasks with lap:times}
+			puts {      SOURCE can be any file in the todo.txt directory. If not specified, the todo.txt file is used.}
 		}
 		
 		out {
@@ -207,7 +208,7 @@ proc time_to_seconds {x_time} {
 proc replace_item {data itemno term} {
 	global todo_path_n_file
 	set loopcount 1
-	
+
 	set fp [open $todo_path_n_file "w"]
 	foreach line $data {
 		if {$loopcount != 1} {
@@ -229,8 +230,8 @@ proc get_bare_task {line} {
 	set result $line
 	set clock_in [get_clock_in $line]
 	set lap_time [get_lap_time $line]
-	regsub -all -- "in:$clock_in" $result "" result		;# strip out any clockins
-	regsub -all -- "lap:$lap_time" $result "" result	;# strip out any laptimes
+	regsub -all -- " in:$clock_in" $result "" result		;# strip out any clockins
+	regsub -all -- " lap:$lap_time" $result "" result	;# strip out any laptimes
 	return $result
 }
 
@@ -242,17 +243,17 @@ proc process_clock_outs {} {
 	# Since its recursive, we need to open and read in the file each time the proc is run.
 
 	global todo_path_n_file
-	set file_data [read_datafile $todo_path_n_file]
-	set data [split $file_data "\n"]
+	set temp_file_data [read_datafile $todo_path_n_file]
+	set temp_data [split $temp_file_data "\n"]
 
 	set loopcount 1
 	set found 0
 	
-	foreach line $data {
+	foreach line $temp_data {
 		
 		# make sure item has clock in
-		if {[has_clock_in $data $loopcount]} {
-		
+		if {[has_clock_in $temp_data $loopcount]} {
+			
 			incr found
 			
 			# get the clock in timestamp
@@ -280,7 +281,7 @@ proc process_clock_outs {} {
 			set new_task [append $new_task $new_task " lap:" $lap_time]
 			
 			# replace task
-			replace_item $data $loopcount $new_task
+			replace_item $temp_data $loopcount $new_task
 		}
 		incr loopcount
 	}
@@ -288,6 +289,12 @@ proc process_clock_outs {} {
 	if {$found > 0} {
 		process_clock_outs
 	}
+}
+
+proc refresh_data {path_n_file} {
+	set file_data [read_datafile $path_n_file]
+	set data [split $file_data "\n"]
+	return $data
 }
 
 # =============================================================================
@@ -311,11 +318,7 @@ set fn todo.txt ;# TODO - Allow for diff filename from command line argument
 set dir [file dirname [info script]]
 set todo_path_n_file [file join $dir $fn]
 
-# Get the data from the file
-set file_data [read_datafile $todo_path_n_file]
-
-#  Process data file
-set data [split $file_data "\n"]
+set data [refresh_data $todo_path_n_file]
 
 switch -exact -- $action {
 
@@ -328,6 +331,9 @@ switch -exact -- $action {
 	in {
 		# Appends timestamp to task as in:timestamp
 		# Will clock out any other tasks that are currently clocked in
+		process_clock_outs
+		set data [refresh_data $todo_path_n_file]
+		
 		if {![has_clock_in $data [lindex $terms 0]]} {
 			set sys_time [clock seconds]
 			set in_time [clock format $sys_time -format %Y-%m-%dT%H:%M:%S] 
@@ -346,7 +352,11 @@ switch -exact -- $action {
 	
 	laps {
 		# Displays report of all tasks with lap:times
-		puts [eval exec [auto_execok $tcl_interpreter] tl.tcl ls lap:]
+		set filename [lindex $terms 0]
+		if {![file exists $filename]} {
+			set filename $fn
+		}
+		puts [eval exec [auto_execok $tcl_interpreter] tl.tcl lf $filename lap:]
 	}
 	
 	out	{
